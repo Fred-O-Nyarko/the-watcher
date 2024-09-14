@@ -1,158 +1,229 @@
+import React, { useState } from "react";
+import { Toast, ToastTitle, useToast } from "@/components/ui/toast";
+import { HStack } from "@/components/ui/hstack";
+import { VStack } from "@/components/ui/vstack";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
+import { LinkText } from "@/components/ui/link";
+
 import {
-  Box,
-  Center,
-  Divider,
-  Flex,
-  Image,
-  Input,
-  InputGroup,
-  ScrollView,
-  Text,
-  useColorModeValue,
-  useTheme,
-} from "native-base";
-import React from "react";
-import { TouchableOpacity } from "react-native";
-import useAppTheme from "../../../_shared/theme/useAppTheme";
-import { useAuth } from "../hooks/useAuth";
+  FormControl,
+  FormControlError,
+  FormControlErrorIcon,
+  FormControlErrorText,
+  FormControlLabel,
+  FormControlLabelText,
+} from "@/components/ui/form-control";
+import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
+
 import {
-  ActivityIndicator,
-  ErrorText,
-  FormTextInput,
-  Label,
-  PrimaryButton,
-  Screens,
-  useNavigationHelpers,
-} from "../../../_shared";
+  ArrowLeftIcon,
+  CheckIcon,
+  AlertCircleIcon,
+  EyeIcon,
+  EyeOffIcon,
+  Icon,
+} from "@/components/ui/icon";
+import { Button, ButtonText, ButtonIcon } from "@/components/ui/button";
+import { Keyboard } from "react-native";
+import { useForm, Controller } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useAuthForm } from "../hooks/useAuthForm";
+import { Pressable } from "@/components/ui/pressable";
+import { Link, useRouter } from "expo-router";
+import { AlertIcon } from "@/components/ui/alert";
 
-// const {width: imageWidth, height: imageHeight} =
-//   RNImage.resolveAssetSource(Logo);
+const USERS = [
+  {
+    email: "gabrial@gmail.com",
+    password: "Gabrial@123",
+  },
+  {
+    email: "tom@gmail.com",
+    password: "Tom@123",
+  },
+  {
+    email: "thomas@gmail.com",
+    password: "Thomas@1234",
+  },
+];
 
-const Auth: React.FC = () => {
-  const { colors } = useTheme();
-  const appTheme = useAppTheme();
+const loginSchema = z.object({
+  phoneNumber: z
+    .string()
+    .min(1, "Phone number is required")
+    .length(10, "Phone number must be 10 digits"),
+  password: z.string().min(1, "Password is required"),
+});
 
-  const { goBack, signIn, handleLogin, isLoading } = useAuth();
-  const navigation = useNavigationHelpers();
+type LoginSchemaType = z.infer<typeof loginSchema>;
+
+const Login = () => {
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
-    password,
-    phoneNumber,
-    isSubmitting,
-    handleChange,
-    handleBlur,
-    getError,
+    control,
     handleSubmit,
-  } = useAuthForm({
-    onSubmit: handleLogin,
-    signIn,
+    reset,
+    formState: { errors },
+  } = useForm<LoginSchemaType>({
+    resolver: zodResolver(loginSchema),
   });
 
+  const toast = useToast();
+
+  const onSubmit = (data: LoginSchemaType) => {
+    console.log("🚀 ~ onSubmit ~ data:", data);
+
+    toast.show({
+      placement: "bottom",
+      render: ({ id }) => {
+        return (
+          <Toast
+            className="!w-4/5"
+            nativeID={id}
+            variant="solid"
+            action="success"
+          >
+            <ToastTitle>Logged in successfully!</ToastTitle>
+          </Toast>
+        );
+      },
+    });
+  };
+  const handleState = () => {
+    setShowPassword((showState) => {
+      return !showState;
+    });
+  };
+  const handleKeyPress = () => {
+    Keyboard.dismiss();
+    handleSubmit(onSubmit)();
+  };
+  const router = useRouter();
   return (
-    <Flex flex="1" safeArea>
-      <ScrollView flex="1" px="8" py="4">
-        <TouchableOpacity onPress={goBack}>
-          {/* <BackIcon color={appTheme.icons.default} /> */}
-        </TouchableOpacity>
-        <Image
-          alt="appLogo"
-          w="32"
-          h="32"
-          mb="-8"
-          ml="-8"
-          testID="appLogo"
-          // source={Logo}
-          // style={{aspectRatio: aspectRatio(imageWidth, imageHeight)}}
-          resizeMode="contain"
-        />
-
-        <Text
-          mt="2"
-          mb="6"
-          fontSize="20"
-          fontWeight="700"
-          alignSelf="center"
-          color={appTheme.text.bold}
+    <VStack className="max-w-[440px] w-full" space="md">
+      <VStack className="md:items-center" space="md">
+        <Pressable
+          onPress={() => {
+            router.back();
+          }}
         >
-          Log in to your account
-        </Text>
-
-        <Box mb={4}>
-          <Box flexGrow="1">
-            <Label renderIf mb={2}>
-              Phone number
-            </Label>
-            <InputGroup flexDir="row" alignItems="center">
-              <Input
-                placeholder="E.g 241234567"
-                placeholderTextColor={appTheme.text.placeholder}
-                value={phoneNumber}
-                variant="rounded"
-                leftElement={
-                  <Center flexDir="row">
-                    <Text mx={2}>+233</Text>
-                    <Divider
-                      h="7"
-                      mx="2"
-                      color="red.800"
-                      orientation="vertical"
-                    />
-                  </Center>
-                }
-                onChangeText={handleChange("phoneNumber")}
-                keyboardType="phone-pad"
-                allowFontScaling={false}
-                testID="phoneInput"
-              />
-            </InputGroup>
-            <ErrorText renderIf={!!getError("phoneNumber")}>
-              {getError("phoneNumber")}
-            </ErrorText>
-            {/* <HelperText renderIf>
-          We’ll call or text you to confirm your number.
-        </HelperText> */}
-          </Box>
-
-          <FormTextInput
-            label={"Password"}
-            secureTextEntry
-            value={password}
-            type="password"
-            onChangeText={handleChange("password")}
-            onBlur={handleBlur("password")}
-            // helperText={
-            //   'Must include a symbol or number and have at least 8 characters.'
-            // }
-            error={getError("password")}
+          <Icon
+            as={ArrowLeftIcon}
+            className="md:hidden text-background-800"
+            size="xl"
           />
-        </Box>
+        </Pressable>
+        <VStack>
+          <Heading className="md:text-center" size="3xl">
+            Log in
+          </Heading>
+        </VStack>
+      </VStack>
+      <VStack className="w-full">
+        <VStack space="xl" className="w-full">
+          <FormControl isInvalid={!!errors?.phoneNumber} className="w-full">
+            <FormControlLabel>
+              <FormControlLabelText>Phone Number</FormControlLabelText>
+            </FormControlLabel>
+            <Controller
+              defaultValue=""
+              name="phoneNumber"
+              control={control}
+              rules={{
+                validate: async (value) => {
+                  try {
+                    await loginSchema.parseAsync({ phoneNumber: value });
+                    return true;
+                  } catch (error: any) {
+                    return error.message;
+                  }
+                },
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input>
+                  <InputField
+                    placeholder="Eg. 0559627288"
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    onSubmitEditing={handleKeyPress}
+                    returnKeyType="done"
+                    keyboardType="phone-pad"
+                    allowFontScaling={false}
+                  />
+                </Input>
+              )}
+            />
 
-        <PrimaryButton
-          mb="6"
-          flexDir="row"
-          bgColor="transparent"
-          borderWidth="1"
-          borderColor={appTheme.text.primary}
-          onPress={handleSubmit as any}
-        >
-          <ActivityIndicator renderIf={isLoading} color={colors.primary[500]} />
-          <PrimaryButton.Text color={appTheme.text.primary}>
-            Login
-          </PrimaryButton.Text>
-        </PrimaryButton>
-
-        <TouchableOpacity
-          onPress={() => navigation.push(Screens.ForgotPassword)()}
-        >
-          <Text textDecorationLine="underline" fontWeight="bold">
-            Forgot Password?
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </Flex>
+            <FormControlError>
+              <FormControlErrorText>
+                <FormControlErrorIcon as={AlertCircleIcon} />
+                {errors?.phoneNumber?.message}
+              </FormControlErrorText>
+            </FormControlError>
+          </FormControl>
+          {/* Label Message */}
+          <FormControl isInvalid={!!errors.password} className="w-full">
+            <FormControlLabel>
+              <FormControlLabelText>Password</FormControlLabelText>
+            </FormControlLabel>
+            <Controller
+              defaultValue=""
+              name="password"
+              control={control}
+              rules={{
+                validate: async (value) => {
+                  try {
+                    await loginSchema.parseAsync({ password: value });
+                    return true;
+                  } catch (error: any) {
+                    return error.message;
+                  }
+                },
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input>
+                  <InputField
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter password"
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    onSubmitEditing={handleKeyPress}
+                    returnKeyType="done"
+                  />
+                  <InputSlot onPress={handleState} className="pr-3">
+                    <InputIcon as={showPassword ? EyeIcon : EyeOffIcon} />
+                  </InputSlot>
+                </Input>
+              )}
+            />
+            <FormControlError>
+              <FormControlErrorIcon as={AlertCircleIcon} />
+              <FormControlErrorText>
+                {errors?.password?.message}
+              </FormControlErrorText>
+            </FormControlError>
+          </FormControl>
+          <HStack className="w-full justify-between ">
+            <Link href="/">
+              <LinkText className="font-medium text-sm text-primary-700 group-hover/link:text-primary-600">
+                Forgot Password?
+              </LinkText>
+            </Link>
+          </HStack>
+        </VStack>
+        <VStack className="w-full my-7 " space="lg">
+          <Button className="w-full" onPress={handleSubmit(onSubmit)}>
+            <ButtonText className="font-medium">Log in</ButtonText>
+          </Button>
+        </VStack>
+      </VStack>
+    </VStack>
   );
 };
 
-export default Auth;
+export default Login;
