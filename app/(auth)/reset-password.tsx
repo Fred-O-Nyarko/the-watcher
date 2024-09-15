@@ -206,7 +206,7 @@ const ResetPassword = () => {
           </FormControl>
         </VStack>
 
-        <VStack className="flex flex-col gap-y-6 mt-7 w-full">
+        <VStack className="flex flex-col gap-y-6 !mt-7 w-full">
           <Button className="w-full" onPress={handleSubmit(onSubmit)}>
             <ButtonText className="font-medium">Update Password</ButtonText>
           </Button>

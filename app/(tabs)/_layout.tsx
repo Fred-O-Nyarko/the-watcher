@@ -4,12 +4,16 @@ import React from "react";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { useReduxSelector } from "@/redux/hooks";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const token = useReduxSelector(
+    (state) => state.persistedReducer.auth.accessToken
+  );
 
-  if (1) {
-    return <Redirect href="/(auth)/reset-password" />;
+  if (!token) {
+    return <Redirect href="/(auth)/login" />;
   }
 
   return (
