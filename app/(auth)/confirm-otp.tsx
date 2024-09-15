@@ -1,61 +1,58 @@
-import React, { memo, useMemo, useRef, useState } from "react";
-import { ActivityIndicator, TextStyle, TouchableOpacity } from "react-native";
-// import OtpInputs from "react-native-otp-inputs";
+import React, { useRef, useState } from "react";
+import { TouchableOpacity } from "react-native";
+import OtpInput from "react-native-otp-textinput";
 import { useAuth } from "./hooks/useAuth";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonText } from "@/components/ui/button";
 import { VStack } from "@/components/ui/vstack";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
+import { Spinner } from "@/components/ui/spinner";
+import { Colors } from "@/constants/Colors";
+import Space from "@/components/custom/space";
 
 const ConfirmOtp: React.FC = () => {
   const otpInputRef = useRef(null);
+
+  const clearText = () => {
+    //   @ts-ignore
+    otpInputRef?.current.clear();
+  };
+
   const [code, setCode] = useState("");
 
   const { phoneNumber, handleResendOtp, handleConfirmOtp, isLoading } =
     useAuth();
-  console.log("🚀 ~ phoneNumber:", phoneNumber);
-
-  const inputStyles: TextStyle = useMemo(
-    () => ({
-      borderWidth: 1,
-      borderRadius: 5,
-      width: 45,
-      height: 45,
-      color: "text-primary",
-      borderColor: "#A6A2A2",
-      justifyContent: "center",
-      alignItems: "center",
-      paddingLeft: 20,
-      fontSize: 24,
-    }),
-    []
-  );
 
   return (
     <VStack className="w-full">
-      <VStack className="md:items-center" space="md">
-        <Heading className="md:text-center" size="3xl">
-          Confirm OTP
-        </Heading>
-        <Heading className="md:text-center" size="md">
+      <VStack>
+        <Heading size="3xl">Confirm OTP</Heading>
+        <Heading>
           Enter the 6-digit code sent to{" "}
           <Text className="font-bold"> {phoneNumber}:</Text>
         </Heading>
       </VStack>
-
-      {/* <OtpInputs
+      <Space height={10} />
+      <OtpInput
         ref={otpInputRef}
-        handleChange={(code: string) => {
+        handleTextChange={(code: string) => {
           setCode(code);
         }}
-        numberOfInputs={6}
+        inputCount={6}
         keyboardType="phone-pad"
-        autofillFromClipboard={false}
-        inputStyles={inputStyles}
-      /> */}
-      {/* <Spacer height={36} /> */}
 
-      <TouchableOpacity onPress={handleResendOtp}>
+        // autofillFromClipboard={false}
+        // inputStyles={inputStyles}
+        // textInputStyle={inputStyles}
+      />
+      <Space height={36} />
+
+      <TouchableOpacity
+        onPress={() => {
+          handleResendOtp();
+          clearText();
+        }}
+      >
         <Text>
           Didn’t get a text?{" "}
           <Text underline className="font-bold">
@@ -69,8 +66,12 @@ const ConfirmOtp: React.FC = () => {
         onPress={() => handleConfirmOtp(code)}
         disabled={code.length !== 6 || isLoading}
       >
-        <ActivityIndicator animating={isLoading} color="red" />
-        <Text>Continue</Text>
+        <Spinner
+          size="small"
+          color={Colors.light.background}
+          animating={isLoading}
+        />
+        <ButtonText className="font-medium ml-2">Continue</ButtonText>
       </Button>
     </VStack>
   );

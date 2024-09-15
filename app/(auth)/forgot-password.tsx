@@ -23,6 +23,7 @@ import {
   forgotPasswordSchemaType,
   forgotPasswordSchema,
 } from "./services/schema";
+import { useAuth } from "./hooks/useAuth";
 
 const ForgotPassword = () => {
   const {
@@ -33,20 +34,28 @@ const ForgotPassword = () => {
   } = useForm<forgotPasswordSchemaType>({
     resolver: zodResolver(forgotPasswordSchema),
   });
+
+  const { handleForgotPassword, isLoading } = useAuth();
+
   const toast = useToast();
 
-  const onSubmit = (_data: forgotPasswordSchemaType) => {
-    toast.show({
-      placement: "bottom right",
-      render: ({ id }) => {
-        return (
-          <Toast nativeID={id} variant="solid" action="success">
-            <ToastTitle>Link Sent Successfully</ToastTitle>
-          </Toast>
-        );
-      },
-    });
-    reset();
+  const onSubmit = async (data: forgotPasswordSchemaType) => {
+    try {
+      await handleForgotPassword(data.phoneNumber);
+      toast.show({
+        placement: "bottom",
+        render: ({ id }) => {
+          return (
+            <Toast nativeID={id} variant="solid" action="success">
+              <ToastTitle>Link Sent Successfully</ToastTitle>
+            </Toast>
+          );
+        },
+      });
+      reset();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleKeyPress = () => {
@@ -68,13 +77,13 @@ const ForgotPassword = () => {
       </VStack>
 
       <VStack space="xl" className="w-full ">
-        <FormControl isInvalid={!!errors?.email} className="w-full">
+        <FormControl isInvalid={!!errors?.phoneNumber} className="w-full">
           <FormControlLabel>
-            <FormControlLabelText>Email</FormControlLabelText>
+            <FormControlLabelText>Phone Number</FormControlLabelText>
           </FormControlLabel>
           <Controller
             defaultValue=""
-            name="email"
+            name="phoneNumber"
             control={control}
             rules={{
               validate: async (value) => {
@@ -89,7 +98,7 @@ const ForgotPassword = () => {
             render={({ field: { onChange, onBlur, value } }) => (
               <Input>
                 <InputField
-                  placeholder="Enter email"
+                  placeholder="Eg. 0559627288"
                   value={value}
                   onChangeText={onChange}
                   onBlur={onBlur}
@@ -102,7 +111,7 @@ const ForgotPassword = () => {
           <FormControlError>
             <FormControlErrorIcon as={AlertCircleIcon} />
             <FormControlErrorText>
-              {errors?.email?.message}
+              {errors?.phoneNumber?.message}
             </FormControlErrorText>
           </FormControlError>
         </FormControl>

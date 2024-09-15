@@ -8671,10 +8671,10 @@ react-native-helmet-async@2.0.4:
     react-fast-compare "^3.2.2"
     shallowequal "^1.1.0"
 
-react-native-otp-inputs@^7.4.0:
-  version "7.4.0"
-  resolved "https://registry.yarnpkg.com/react-native-otp-inputs/-/react-native-otp-inputs-7.4.0.tgz#ea1badabdf231faee5bcb5231034911bbba49aed"
-  integrity sha512-+phHrlcQQ63VuOrHaOZze7LP9WmzUGxGMlQx2A/jhPhYkCi/5hXDjxNcWyPXCy/RFRoLX+70HNpGqTgo0mDg7Q==
+react-native-otp-textinput@^1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/react-native-otp-textinput/-/react-native-otp-textinput-1.1.6.tgz#4e3560e2e0a30849169cff4e40f3035c594a73fc"
+  integrity sha512-auj4etyrp8N2GWyWTDO2If3uMdSoMR9oSJweQYfNEYP8cJEoEHLtDJhNOBJMwTrkRG8YbYroHg3b30TOhLv9kw==
 
 react-native-reanimated@~3.10.1:
   version "3.10.1"

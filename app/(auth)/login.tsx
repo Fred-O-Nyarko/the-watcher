@@ -25,10 +25,11 @@ import { Link, useRouter } from "expo-router";
 import { LoginSchemaType, loginSchema } from "./services/schema";
 import { Text } from "@/components/ui/text";
 import { useAuth } from "./hooks/useAuth";
+import { Spinner } from "@/components/ui/spinner";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const { handleLogin } = useAuth();
+  const { handleLogin, isLoading } = useAuth();
   const {
     control,
     handleSubmit,
@@ -185,6 +186,7 @@ const Login = () => {
         </VStack>
         <VStack className="w-full my-7 " space="lg">
           <Button className="w-full" onPress={handleSubmit(onSubmit)}>
+            <Spinner size="small" color="text-gray-500" animating={isLoading} />
             <ButtonText className="font-medium">Log in</ButtonText>
           </Button>
         </VStack>

@@ -37,7 +37,11 @@ export const createPasswordSchema = z.object({
 export type CreatePasswordSchemaType = z.infer<typeof createPasswordSchema>;
 
 export const forgotPasswordSchema = z.object({
-  email: z.string().min(1, "Email is required").email(),
+  phoneNumber: z
+    .string()
+    .min(9, "Phone number required")
+    .max(10, "Phone number must be 10 digits")
+    .regex(/(^0?\d{9}$)/, "Phone number is invalid: eg 024xxxxxxx"),
 });
 
 export type forgotPasswordSchemaType = z.infer<typeof forgotPasswordSchema>;

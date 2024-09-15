@@ -29,7 +29,6 @@ export function useAuth() {
     password: string;
     from: string;
   }>();
-  console.log("🚀 ~ useAuth ~ params:", params);
 
   const [loginUser, { isError, isLoading: isLoadingLogin, data, error }] =
     useAuthControllerLoginMutation();
@@ -92,6 +91,8 @@ export function useAuth() {
       const user = await getUser().unwrap();
       dispatch(currentUserActions.updateUser(user));
 
+      router.push("/(tabs)");
+
       // showInfo("Success");
     } catch (e) {
       console.log("🚀 ~ handleConfirmOtp ~ e:", e);
@@ -115,7 +116,6 @@ export function useAuth() {
   }
 
   const handleForgotPassword = async (phoneNumber: string) => {
-    console.log("phoneNumber", phoneNumber);
     try {
       const res = await resetPasswordMutation({
         sendResetForgottenPasswordCodeRequestDto: {
