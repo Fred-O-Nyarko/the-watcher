@@ -3,7 +3,6 @@ import { Toast, ToastTitle, useToast } from "@/components/ui/toast";
 import { HStack } from "@/components/ui/hstack";
 import { VStack } from "@/components/ui/vstack";
 import { Heading } from "@/components/ui/heading";
-import { Text } from "@/components/ui/text";
 import { LinkText } from "@/components/ui/link";
 
 import {
@@ -16,48 +15,15 @@ import {
 } from "@/components/ui/form-control";
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 
-import {
-  ArrowLeftIcon,
-  CheckIcon,
-  AlertCircleIcon,
-  EyeIcon,
-  EyeOffIcon,
-  Icon,
-} from "@/components/ui/icon";
-import { Button, ButtonText, ButtonIcon } from "@/components/ui/button";
+import { AlertCircleIcon, EyeIcon, EyeOffIcon } from "@/components/ui/icon";
+import { Button, ButtonText } from "@/components/ui/button";
 import { Keyboard } from "react-native";
 import { useForm, Controller } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Pressable } from "@/components/ui/pressable";
 import { Link, useRouter } from "expo-router";
-import { AlertIcon } from "@/components/ui/alert";
-
-const USERS = [
-  {
-    email: "gabrial@gmail.com",
-    password: "Gabrial@123",
-  },
-  {
-    email: "tom@gmail.com",
-    password: "Tom@123",
-  },
-  {
-    email: "thomas@gmail.com",
-    password: "Thomas@1234",
-  },
-];
-
-const loginSchema = z.object({
-  phoneNumber: z
-    .string()
-    .min(1, "Phone number is required")
-    .length(10, "Phone number must be 10 digits"),
-  password: z.string().min(1, "Password is required"),
-});
-
-type LoginSchemaType = z.infer<typeof loginSchema>;
+import { LoginSchemaType, loginSchema } from "./services/schema";
+import { Text } from "@/components/ui/text";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -105,17 +71,6 @@ const Login = () => {
   return (
     <VStack className="max-w-[440px] w-full" space="md">
       <VStack className="md:items-center" space="md">
-        <Pressable
-          onPress={() => {
-            router.back();
-          }}
-        >
-          <Icon
-            as={ArrowLeftIcon}
-            className="md:hidden text-background-800"
-            size="xl"
-          />
-        </Pressable>
         <VStack>
           <Heading className="md:text-center" size="3xl">
             Log in
@@ -144,6 +99,14 @@ const Login = () => {
               }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input>
+                  <InputSlot
+                    onPress={handleState}
+                    style={{
+                      paddingLeft: 12,
+                    }}
+                  >
+                    <Text>+233</Text>
+                  </InputSlot>
                   <InputField
                     placeholder="Eg. 0559627288"
                     value={value}
@@ -209,7 +172,7 @@ const Login = () => {
             </FormControlError>
           </FormControl>
           <HStack className="w-full justify-between ">
-            <Link href="/">
+            <Link href="/(auth)/forgot-password">
               <LinkText className="font-medium text-sm text-primary-700 group-hover/link:text-primary-600">
                 Forgot Password?
               </LinkText>

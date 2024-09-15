@@ -9,10 +9,10 @@ const AuthLayout = () => {
     <SafeAreaView>
       <ScrollView
         className="w-full h-full px-2"
-        contentContainerStyle={{ flexGrow: 1 }}
+        contentContainerStyle={{ flexGrow: 1, marginTop: 20 }}
       >
         <HStack className="w-full h-full flex-grow justify-center">
-          <VStack className="md:items-center md:justify-center flex-1 w-full  p-9 md:gap-10 gap-16 md:m-auto md:w-1/2 h-full">
+          <VStack className="md:items-center md:justify-center flex-1 w-full p-9 md:gap-10 gap-16 md:m-auto md:w-1/2 h-full">
             <Slot />
           </VStack>
         </HStack>

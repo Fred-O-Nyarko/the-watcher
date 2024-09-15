@@ -9,7 +9,7 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   if (1) {
-    return <Redirect href="/(auth)/login" />;
+    return <Redirect href="/(auth)/reset-password" />;
   }
 
   return (
