@@ -1,7 +1,7 @@
 import PKG from "../package.json";
 
-const STAGING_BASE_URL = "hhtps://watch.chippycode.com";
-const PRODUCTION_BASE_URL = "hhtps://watch.chippycode.com";
+const STAGING_BASE_URL = "https://watch.chippycode.com";
+const PRODUCTION_BASE_URL = "https://watch.chippycode.com";
 
 export function envVal(production: string, staging?: string) {
   return process.env.NODE_ENV === "production" ? production : staging;

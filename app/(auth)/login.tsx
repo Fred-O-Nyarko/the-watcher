@@ -24,10 +24,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useRouter } from "expo-router";
 import { LoginSchemaType, loginSchema } from "./services/schema";
 import { Text } from "@/components/ui/text";
+import { useAuth } from "./hooks/useAuth";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-
+  const { handleLogin } = useAuth();
   const {
     control,
     handleSubmit,
@@ -39,24 +40,29 @@ const Login = () => {
 
   const toast = useToast();
 
-  const onSubmit = (data: LoginSchemaType) => {
+  const onSubmit = async (data: LoginSchemaType) => {
     console.log("🚀 ~ onSubmit ~ data:", data);
+    try {
+      await handleLogin(data);
+      toast.show({
+        placement: "bottom",
 
-    toast.show({
-      placement: "bottom",
-      render: ({ id }) => {
-        return (
-          <Toast
-            className="!w-4/5"
-            nativeID={id}
-            variant="solid"
-            action="success"
-          >
-            <ToastTitle>Logged in successfully!</ToastTitle>
-          </Toast>
-        );
-      },
-    });
+        render: ({ id }) => {
+          return (
+            <Toast
+              className="!w-4/5"
+              nativeID={id}
+              variant="solid"
+              action="success"
+            >
+              <ToastTitle>Logged in successfully!</ToastTitle>
+            </Toast>
+          );
+        },
+      });
+    } catch (error) {
+      console.log("🚀 ~ onSubmit ~ error:", error);
+    }
   };
   const handleState = () => {
     setShowPassword((showState) => {
@@ -71,11 +77,9 @@ const Login = () => {
   return (
     <VStack className="max-w-[440px] w-full" space="md">
       <VStack className="md:items-center" space="md">
-        <VStack>
-          <Heading className="md:text-center" size="3xl">
-            Log in
-          </Heading>
-        </VStack>
+        <Heading className="md:text-center" size="3xl">
+          Log in
+        </Heading>
       </VStack>
       <VStack className="w-full">
         <VStack space="xl" className="w-full">

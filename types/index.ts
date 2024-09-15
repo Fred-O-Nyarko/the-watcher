@@ -115,3 +115,5 @@ type FindOptionsOrderValue =
     };
 
 export type Filter<E> = FindFilter<E>[] | FindFilter<E>;
+
+export type Maybe<T> = T | null;

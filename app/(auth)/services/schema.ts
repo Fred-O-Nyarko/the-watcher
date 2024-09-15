@@ -3,9 +3,9 @@ import { z } from "zod";
 export const loginSchema = z.object({
   phoneNumber: z
     .string()
-    .min(1, "Phone number required")
-    .length(10, "Phone number must be 10 digits")
-    .regex(/(^\d{10}$)/, "Phone number is invalid: eg 024xxxxxxx"),
+    .min(9, "Phone number required")
+    .max(10, "Phone number must be 10 digits")
+    .regex(/(^0?\d{9}$)/, "Phone number is invalid: eg 024xxxxxxx"),
   password: z.string().min(1, "Password is required"),
 });
 
