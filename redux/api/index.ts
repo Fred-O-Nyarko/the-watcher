@@ -8,8 +8,8 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import K from "@/constants";
 import { ReduxState } from "../store";
-// import { authActions } from "../slices";
-// import { RefreshTokenResponseDto } from "./openapi.generated";
+import { authActions } from "../slices/auth";
+import { RefreshTokenResponseDto } from "./openapi.generated";
 // import { showError } from "../../_shared";
 
 export declare type FormRecognizerRequestBody =
@@ -66,21 +66,22 @@ const baseQueryWithReauth: BaseQueryFn<
     //   extraOptions,
     // );
 
-    // if ((data as unknown as RefreshTokenResponseDto).refreshToken) {
-    //   // store the new token in the store or wherever you keep it
-    //   api.dispatch(
-    //     authActions.setTokens({
-    //       accessToken: (data as unknown as RefreshTokenResponseDto).accessToken,
-    //       refreshToken: (data as unknown as RefreshTokenResponseDto)
-    //         .refreshToken,
-    //     })
-    //   );
-    //   // retry the initial query
-    //   result = await baseQuery(args, api, extraOptions);
-    // } else {
-    //   // refresh failed - do something like redirect to login or show a "retry" button
-    //   showError("Token expired, please login again");
-    // }
+    if ((data as unknown as RefreshTokenResponseDto).refreshToken) {
+      // store the new token in the store or wherever you keep it
+      api.dispatch(
+        authActions.setTokens({
+          accessToken: (data as unknown as RefreshTokenResponseDto).accessToken,
+          refreshToken: (data as unknown as RefreshTokenResponseDto)
+            .refreshToken,
+        })
+      );
+      // retry the initial query
+      result = await baseQuery(args, api, extraOptions);
+    } else {
+      // refresh failed - do something like redirect to login or show a "retry" button
+      // showError("Token expired, please login again");
+      api.dispatch(authActions.clearTokens());
+    }
   }
   return result;
 };

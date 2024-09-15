@@ -15,9 +15,6 @@ export const currentUserSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setCurrentUser: (state, action: PayloadAction<UserEntity>) => {
-      state.user = action.payload;
-    },
     updateCurrentUser: (state, action: PayloadAction<UserEntity>) => {
       const update = action.payload;
       state.user = {
@@ -40,7 +37,8 @@ export const selectCurrentUser = createSelector(
   (user: CurrentUserState) => user
 );
 
-export const currentUserActions = currentUserSlice.actions;
+export const { logOutCurrentUser, updateCurrentUser } =
+  currentUserSlice.actions;
 
 const currentUserReducer = currentUserSlice.reducer;
 
