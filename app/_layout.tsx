@@ -17,9 +17,19 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import store, { persistor } from "@/redux/store";
+import React from "react";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+
+type ThemeContextType = {
+  colorMode?: "dark" | "light";
+  toggleColorMode?: () => void;
+};
+export const ThemeContext = React.createContext<ThemeContextType>({
+  colorMode: "light",
+  toggleColorMode: () => {},
+});
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -42,10 +52,10 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            <GluestackUIProvider mode="light">
-              <ThemeProvider
-                value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-              >
+            <ThemeProvider
+              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+            >
+              <GluestackUIProvider mode="light">
                 <Stack>
                   <Stack.Screen
                     name="(tabs)"
@@ -57,8 +67,8 @@ export default function RootLayout() {
                   />
                   <Stack.Screen name="+not-found" />
                 </Stack>
-              </ThemeProvider>
-            </GluestackUIProvider>
+              </GluestackUIProvider>
+            </ThemeProvider>
           </PersistGate>
         </Provider>
       </SafeAreaProvider>

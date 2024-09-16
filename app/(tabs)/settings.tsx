@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 
-const LiveUpdates = () => {
+const Settings = () => {
   return (
     <View>
-      <Text>LiveUpdates</Text>
+      <Text>Settings</Text>
     </View>
   );
 };
 
-export default LiveUpdates;
+export default Settings;
 
 const styles = StyleSheet.create({});

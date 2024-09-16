@@ -26,22 +26,36 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
+          title: "Live Updates",
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
-              name={focused ? "home" : "home-outline"}
+              name={focused ? "radio" : "radio-outline"}
               color={color}
             />
           ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="upload"
         options={{
-          title: "Explore",
+          title: "Upload Results",
+          headerShadowVisible: true,
+          headerShown: true,
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
-              name={focused ? "code-slash" : "code-slash-outline"}
+              name={focused ? "cloud-upload" : "cloud-upload-outline"}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: "Settings",
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon
+              name={focused ? "settings" : "settings-outline"}
               color={color}
             />
           ),
